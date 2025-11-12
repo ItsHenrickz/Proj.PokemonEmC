@@ -1,0 +1,117 @@
+#include <stdio.h>
+
+//Estrutura para definir as características do pokémon.
+struct Pokemon{
+    int indice;
+    char nome[50];
+    int vida;
+    int danobase;
+    int ataque1; 
+    int ataque2; 
+    int ataque3; 
+    int ataque4;
+    int velocidade;
+};
+
+//Array para armazenar os pokémons já existentes.
+struct Pokemon pokemons[4];
+
+//Função para copiar a string do nome do pokemon para a variavel nome do tipo Pokemon.
+void copiaNome(char destinoNome[], const char origemNome[]){
+    int i = 0;
+    while (origemNome[i] != '\0'){
+        destinoNome[i] = origemNome[i];
+        i++;
+    }
+    destinoNome[i] = '\0';
+}
+
+int ataques[16];
+int x;
+
+int ShadowBall(){
+    pokemons[1].vida = pokemons[1].vida - 60; //Inimigo
+    return pokemons[1].vida - 60;
+}
+int Confusion(){
+    pokemons[x].vida = pokemons[x].vida - 30; //Inimigo
+    pokemons[x].velocidade = pokemons[x].velocidade * 0.8; //Inimigo
+}
+int Growth(){
+    pokemons[x].danobase = pokemons[x].danobase * 1.2; //Usuário
+}
+int NightShade(){
+    pokemons[x].vida = pokemons[x].vida - 45; //Inimigo
+}
+int AuraSphere(){
+    pokemons[x].vida = pokemons[x].vida - 80; //Inimigo
+}
+
+
+//Função para adicionar os pokemons e suas características no array.
+void colocarPokemons(){
+    pokemons[0].indice = 0;
+    copiaNome(pokemons[0].nome, "Gengar");
+    pokemons[0].vida = 200;
+    pokemons[0].danobase = 50;
+    pokemons[0].ataque1 = ShadowBall();
+    pokemons[0].ataque2 = Confusion();
+    pokemons[0].ataque3 = Growth();
+    pokemons[0].ataque4 = NightShade();
+    pokemons[0].velocidade = 100;
+    
+    pokemons[1].indice = 1;
+    copiaNome(pokemons[1].nome, "Lucario");
+    pokemons[1].vida = 220;
+    pokemons[1].danobase = 45;
+    pokemons[1].ataque1 = pokemons[1].vida - 80;
+    pokemons[1].ataque2 = pokemons[1].velocidade * 0.8;
+    pokemons[1].ataque3 = pokemons[1].danobase * 1.2;
+    pokemons[1].ataque4 = pokemons[1].vida - 60;
+    pokemons[1].velocidade = 90;
+    
+    pokemons[2].indice = 2;
+    copiaNome(pokemons[2].nome, "Scizor");
+    pokemons[2].vida = 230;
+    pokemons[2].danobase = 42;
+    pokemons[2].ataque1 = pokemons[1].vida - 80;
+    pokemons[2].ataque2 = pokemons[1].velocidade * 0.8;
+    pokemons[2].ataque3 = pokemons[1].danobase * 1.2;
+    pokemons[2].ataque4 = pokemons[1].vida - 60;
+    pokemons[2].velocidade = 85;
+    
+    pokemons[3].indice = 3;
+    copiaNome(pokemons[3].nome, "Greninja");
+    pokemons[3].vida = 190;
+    pokemons[3].danobase = 65;
+    pokemons[3].ataque1 = pokemons[1].vida - 80;
+    pokemons[3].ataque2 = pokemons[1].velocidade * 0.8;
+    pokemons[3].ataque3 = pokemons[1].danobase * 1.2;
+    pokemons[3].ataque4 = pokemons[1].vida - 60;
+    pokemons[3].velocidade = 120;
+}
+
+
+
+
+//Ataques:
+/*int Ataque(){
+    switch (indice){
+        case 1:
+            dano = ataque1
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+    }
+} 
+*/
+int main()
+{
+    
+    colocarPokemons();
+    printf("%d", pokemons[0].ataque1);
+}
