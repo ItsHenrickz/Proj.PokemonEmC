@@ -1,0 +1,72 @@
+#include <stdio.h>
+
+struct Pokemon {
+    char nome[50];
+    int vida;
+    int danobase;
+    int velocidade;
+};
+
+void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int ataque1, int ataque2) {
+    struct Pokemon *primeiro, *segundo;
+    int atkPrimeiro, atkSegundo;
+
+    if (p1->velocidade >= p2->velocidade) {
+        primeiro = p1;
+        segundo = p2;
+        atkPrimeiro = ataque1;
+        atkSegundo = ataque2;
+    } else {
+        primeiro = p2;
+        segundo = p1;
+        atkPrimeiro = ataque2;
+        atkSegundo = ataque1;
+    }
+
+    printf("\n%s é mais rápido e vai atacar primeiro!\n", primeiro->nome);
+
+    if (atkPrimeiro == 1) {
+        segundo->vida -= 50;
+        printf("%s usou Ataque Rápido! Causou 50 de dano em %s!\n", primeiro->nome, segundo->nome);
+    } else if (atkPrimeiro == 2) {
+        segundo->vida -= 30;
+        segundo->velocidade -= 10;
+        printf("%s usou Golpe de Velocidade! Causou 30 de dano e reduziu a velocidade de %s!\n", primeiro->nome, segundo->nome);
+    } else if (atkPrimeiro == 3) {
+        primeiro->vida += 20;
+        printf("%s usou Cura! Recuperou 20 de vida!\n", primeiro->nome);
+    }
+
+    if (segundo->vida <= 0) {
+        printf("\n%s foi derrotado!\n", segundo->nome);
+        return;
+    }
+
+    if (atkSegundo == 1) {
+        primeiro->vida -= 50;
+        printf("%s usou Ataque Rápido! Causou 50 de dano em %s!\n", segundo->nome, primeiro->nome);
+    } else if (atkSegundo == 2) {
+        primeiro->vida -= 30;
+        primeiro->velocidade -= 10;
+        printf("%s usou Golpe de Velocidade! Causou 30 de dano e reduziu a velocidade de %s!\n", segundo->nome, primeiro->nome);
+    } else if (atkSegundo == 3) {
+        segundo->vida += 20;
+        printf("%s usou Cura! Recuperou 20 de vida!\n", segundo->nome);
+    }
+
+    if (p1->vida < 0) p1->vida = 0;
+    if (p2->vida < 0) p2->vida = 0;
+
+    printf("\n--- STATUS ATUAL ---\n");
+    printf("%s - Vida: %d | Velocidade: %d\n", p1->nome, p1->vida, p1->velocidade);
+    printf("%s - Vida: %d | Velocidade: %d\n", p2->nome, p2->vida, p2->velocidade);
+}
+
+int main() {
+    struct Pokemon p1 = {"Pikachu", 200, 50, 100};
+    struct Pokemon p2 = {"Charmander", 220, 45, 80};
+
+    calcularBatalha(&p1, &p2, 1, 2);
+
+    return 0;
+}
