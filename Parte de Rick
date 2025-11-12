@@ -6,10 +6,10 @@ struct Pokemon{
     char nome[50];
     int vida;
     int danobase;
-    int ataque1; 
-    int ataque2; 
-    int ataque3; 
-    int ataque4;
+    void (*ataque1)(struct Pokemon*, struct Pokemon*); 
+    void (*ataque2)(struct Pokemon*, struct Pokemon*); 
+    void (*ataque3)(struct Pokemon*, struct Pokemon*); 
+    void (*ataque4)(struct Pokemon*, struct Pokemon*); 
     int velocidade;
 };
 
@@ -26,25 +26,28 @@ void copiaNome(char destinoNome[], const char origemNome[]){
     destinoNome[i] = '\0';
 }
 
-int ataques[16];
 int x;
 
-int ShadowBall(){
-    pokemons[1].vida = pokemons[1].vida - 60; //Inimigo
-    return pokemons[1].vida - 60;
+void ShadowBall(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= 60; //Inimigo
+    printf("%s usou Shadow Ball! Vida atual do Inimigo: %d\n", primeiro->nome, segundo->vida);
 }
-int Confusion(){
-    pokemons[x].vida = pokemons[x].vida - 30; //Inimigo
-    pokemons[x].velocidade = pokemons[x].velocidade * 0.8; //Inimigo
+void Confusion(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= 30; //Inimigo
+    segundo->velocidade *= 0.8; //Inimigo
+    printf("%s usou Confusion! A velocidade do inimigo diminuiu! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
 }
-int Growth(){
-    pokemons[x].danobase = pokemons[x].danobase * 1.2; //Usuário
+void Growth(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.2; //Usuário
+    printf("%s usou Growth! O dano base do usuário aumentou!", primeiro->nome);
 }
-int NightShade(){
-    pokemons[x].vida = pokemons[x].vida - 45; //Inimigo
+void NightShade(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= 45; //Inimigo
+    printf("%s usou Night Shade! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
 }
-int AuraSphere(){
-    pokemons[x].vida = pokemons[x].vida - 80; //Inimigo
+void AuraSphere(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= 80; //Inimigo
+    printf("%s usou Aura Sphere! Vida atual do Inimigo: %d\n", primeiro->nome, segundo->vida);
 }
 
 
@@ -54,21 +57,21 @@ void colocarPokemons(){
     copiaNome(pokemons[0].nome, "Gengar");
     pokemons[0].vida = 200;
     pokemons[0].danobase = 50;
-    pokemons[0].ataque1 = ShadowBall();
-    pokemons[0].ataque2 = Confusion();
-    pokemons[0].ataque3 = Growth();
-    pokemons[0].ataque4 = NightShade();
+    pokemons[0].ataque1 = ShadowBall;
+    pokemons[0].ataque2 = Confusion;
+    pokemons[0].ataque3 = Growth;
+    pokemons[0].ataque4 = NightShade;
     pokemons[0].velocidade = 100;
     
     pokemons[1].indice = 1;
     copiaNome(pokemons[1].nome, "Lucario");
     pokemons[1].vida = 220;
     pokemons[1].danobase = 45;
-    pokemons[1].ataque1 = pokemons[1].vida - 80;
-    pokemons[1].ataque2 = pokemons[1].velocidade * 0.8;
+    pokemons[1].ataque1 = AuraSphere;
+    /*pokemons[1].ataque2 = pokemons[1].velocidade * 0.8;
     pokemons[1].ataque3 = pokemons[1].danobase * 1.2;
-    pokemons[1].ataque4 = pokemons[1].vida - 60;
-    pokemons[1].velocidade = 90;
+    pokemons[1].ataque4 = pokemons[1].vida - 60;*/
+    pokemons[1].velocidade = 90;/*
     
     pokemons[2].indice = 2;
     copiaNome(pokemons[2].nome, "Scizor");
@@ -88,7 +91,7 @@ void colocarPokemons(){
     pokemons[3].ataque2 = pokemons[1].velocidade * 0.8;
     pokemons[3].ataque3 = pokemons[1].danobase * 1.2;
     pokemons[3].ataque4 = pokemons[1].vida - 60;
-    pokemons[3].velocidade = 120;
+    pokemons[3].velocidade = 120;*/
 }
 
 
@@ -109,9 +112,68 @@ void colocarPokemons(){
     }
 } 
 */
+
+
+void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2) {
+    struct Pokemon *primeiro, *segundo;
+    int atkPrimeiro, atkSegundo;
+
+    if (p1->velocidade >= p2->velocidade) {
+        primeiro = p1;
+        segundo = p2;
+        atkPrimeiro = atk1;
+        atkSegundo = atk2;
+    } else {
+        primeiro = p2;
+        segundo = p1;
+        atkPrimeiro = atk2;
+        atkSegundo = atk1;
+    }
+
+    printf("\n%s é mais rápido e vai atacar primeiro!\n", primeiro->nome);
+
+    if (atkPrimeiro == 1) {
+        primeiro->ataque1(primeiro, segundo);
+    } else if (atkPrimeiro == 2) {
+        primeiro->ataque2(primeiro, segundo);
+    } else if (atkPrimeiro == 3) {
+        primeiro->ataque3(primeiro, segundo);
+    } else if (atkPrimeiro == 4) {
+        primeiro->ataque4(primeiro, segundo);
+    }
+
+    if (segundo->vida <= 0) {
+        printf("\n%s foi derrotado!\n", segundo->nome);
+        return;
+    }
+
+    if (atkSegundo == 1) {
+        segundo->ataque1(segundo, primeiro);
+    } else if (atkSegundo == 2) {
+        segundo->ataque2(segundo, primeiro);
+    } else if (atkSegundo == 3) {
+        segundo->ataque3(segundo, primeiro);
+    } else if (atkSegundo == 4) {
+        segundo->ataque4(segundo, primeiro);
+    }
+
+    if (p1->vida < 0) p1->vida = 0;
+    if (p2->vida < 0) p2->vida = 0;
+
+    printf("\n--- STATUS ATUAL ---\n");
+    printf("%s - Vida: %d | Velocidade: %d\n", p1->nome, p1->vida, p1->velocidade);
+    printf("%s - Vida: %d | Velocidade: %d\n", p2->nome, p2->vida, p2->velocidade);
+}
+
 int main()
 {
     
     colocarPokemons();
-    printf("%d", pokemons[0].ataque1);
+    
+    struct Pokemon p1 = pokemons[0];
+    struct Pokemon p2 = pokemons[1];
+
+    calcularBatalha(&p1, &p2, 1, 1);
+
+    return 0;
 }
