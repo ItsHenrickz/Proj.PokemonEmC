@@ -26,29 +26,96 @@ void copiaNome(char destinoNome[], const char origemNome[]){
     destinoNome[i] = '\0';
 }
 
-int x;
+//Fórmula para calcular o dano de um ataque.
+int formAtk(struct Pokemon *primeiro, int poderAtk){
+    return (primeiro->danobase * poderAtk)/50;
+}
 
+//Ataques: Cada ataque possui sua própria função.
+//Ataques do Gengar
 void ShadowBall(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= 60; //Inimigo
+    segundo->vida -= formAtk(primeiro, 60); //Inimigo
     printf("%s usou Shadow Ball! Vida atual do Inimigo: %d\n", primeiro->nome, segundo->vida);
 }
 void Confusion(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= 30; //Inimigo
+    segundo->vida -= formAtk(primeiro, 30); //Inimigo
     segundo->velocidade *= 0.8; //Inimigo
     printf("%s usou Confusion! A velocidade do inimigo diminuiu! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
 }
 void Growth(struct Pokemon *primeiro, struct Pokemon *segundo){
     primeiro->danobase *= 1.2; //Usuário
-    printf("%s usou Growth! O dano base do usuário aumentou!", primeiro->nome);
+    printf("%s usou Growth! O dano base do usuário aumentou!\n", primeiro->nome);
 }
 void NightShade(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= 45; //Inimigo
+    segundo->vida -= formAtk(primeiro, 45); //Inimigo
     printf("%s usou Night Shade! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
 }
+
+//Ataques do Lucario
 void AuraSphere(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= 80; //Inimigo
+    segundo->vida -= formAtk(primeiro, 80); //Inimigo
     printf("%s usou Aura Sphere! Vida atual do Inimigo: %d\n", primeiro->nome, segundo->vida);
 }
+void BulkUp(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.2; //Usuário
+    printf("%s usou Bulk Up! O dano base do usuário aumentou!", primeiro->nome);
+}
+void CloseCombat (struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 100); //Inimigo
+    primeiro->vida -= 20; //Usuário
+    printf("%s usou Close Combat! Vida atual do inimigo: %d. %s perdeu um pouco de vida!\n", primeiro->nome, segundo->vida, primeiro->nome);
+}
+void HealPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->vida += 40; //Usuário
+    if (primeiro->vida > 220){
+        primeiro->vida = 220;
+    }
+    printf("%s usou Heal Pulse! %s recuperou um pouco de vida!\n", primeiro->nome, primeiro->nome);
+}
+
+//Ataques do Scizor
+void BulletPunch(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 50);
+    primeiro->velocidade *= 1.3;
+    printf("%s usou Bullet Punch! Sua velocidade aumentou! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
+void SwordsDance(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.5;
+    printf("%s usou Swords Dance! Seu poder de ataque aumentou consideravelmente!\n", primeiro->nome);
+}
+
+void IronHead(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 70);
+    printf("%s usou Iron Head! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
+void XScissor(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 65);
+    printf("%s usou X-Scissor! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
+//Ataques do Greninja
+void WaterShuriken(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 50);
+    printf("%s usou Water Shuriken! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
+void DarkPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 60);
+    printf("%s usou Dark Pulse! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
+void DoubleTeam(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->velocidade *= 1.3;
+    printf("%s usou Double Team! Sua velocidade aumentou!\n", primeiro->nome);
+}
+
+void HydroPump(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 90);
+    printf("%s usou Hydro Pump! Vida atual do inimigo: %d\n", primeiro->nome, segundo->vida);
+}
+
 
 
 //Função para adicionar os pokemons e suas características no array.
@@ -68,56 +135,40 @@ void colocarPokemons(){
     pokemons[1].vida = 220;
     pokemons[1].danobase = 45;
     pokemons[1].ataque1 = AuraSphere;
-    /*pokemons[1].ataque2 = pokemons[1].velocidade * 0.8;
-    pokemons[1].ataque3 = pokemons[1].danobase * 1.2;
-    pokemons[1].ataque4 = pokemons[1].vida - 60;*/
-    pokemons[1].velocidade = 90;/*
+    pokemons[1].ataque2 = BulkUp;
+    pokemons[1].ataque3 = CloseCombat;
+    pokemons[1].ataque4 = HealPulse;
+    pokemons[1].velocidade = 90;
     
     pokemons[2].indice = 2;
     copiaNome(pokemons[2].nome, "Scizor");
     pokemons[2].vida = 230;
     pokemons[2].danobase = 42;
-    pokemons[2].ataque1 = pokemons[1].vida - 80;
-    pokemons[2].ataque2 = pokemons[1].velocidade * 0.8;
-    pokemons[2].ataque3 = pokemons[1].danobase * 1.2;
-    pokemons[2].ataque4 = pokemons[1].vida - 60;
+    pokemons[2].ataque1 = BulletPunch;
+    pokemons[2].ataque2 = SwordsDance;
+    pokemons[2].ataque3 = IronHead;
+    pokemons[2].ataque4 = XScissor;
     pokemons[2].velocidade = 85;
     
     pokemons[3].indice = 3;
     copiaNome(pokemons[3].nome, "Greninja");
     pokemons[3].vida = 190;
-    pokemons[3].danobase = 65;
-    pokemons[3].ataque1 = pokemons[1].vida - 80;
-    pokemons[3].ataque2 = pokemons[1].velocidade * 0.8;
-    pokemons[3].ataque3 = pokemons[1].danobase * 1.2;
-    pokemons[3].ataque4 = pokemons[1].vida - 60;
-    pokemons[3].velocidade = 120;*/
+    pokemons[3].danobase = 55;
+    pokemons[3].ataque1 = WaterShuriken;
+    pokemons[3].ataque2 = DarkPulse;
+    pokemons[3].ataque3 = DoubleTeam;
+    pokemons[3].ataque4 = HydroPump;
+    pokemons[3].velocidade = 120;
+    
 }
 
 
-
-
-//Ataques:
-/*int Ataque(){
-    switch (indice){
-        case 1:
-            dano = ataque1
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-    }
-} 
-*/
-
-
+//Função que irá calcular a batalha. Quem bate primeiro, e quais ataques serão utilizados.
 void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2) {
     struct Pokemon *primeiro, *segundo;
     int atkPrimeiro, atkSegundo;
 
+    //Se Pokemon1 for mais rápido que Pokémon 2, Pok 1 bate primeiro, e vice versa.
     if (p1->velocidade >= p2->velocidade) {
         primeiro = p1;
         segundo = p2;
@@ -131,7 +182,8 @@ void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2)
     }
 
     printf("\n%s é mais rápido e vai atacar primeiro!\n", primeiro->nome);
-
+    
+    //Estrutura condicional pra decidir qual ataque será utilizado pelo pokémon 1.
     if (atkPrimeiro == 1) {
         primeiro->ataque1(primeiro, segundo);
     } else if (atkPrimeiro == 2) {
@@ -142,11 +194,13 @@ void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2)
         primeiro->ataque4(primeiro, segundo);
     }
 
+    //Se a vida do pokémon que for acertado chegar a 0, ele será derrotado e cancelará seu ataque se ele não tiver atacado.
     if (segundo->vida <= 0) {
         printf("\n%s foi derrotado!\n", segundo->nome);
         return;
     }
 
+    //Estrutura condicional pra decidir qual ataque será utilizado pelo pokémon 2.
     if (atkSegundo == 1) {
         segundo->ataque1(segundo, primeiro);
     } else if (atkSegundo == 2) {
@@ -157,6 +211,7 @@ void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2)
         segundo->ataque4(segundo, primeiro);
     }
 
+    //Se a vida de algum dos pokémons chegar a abaixo de 0, iguala a vida a 0.
     if (p1->vida < 0) p1->vida = 0;
     if (p2->vida < 0) p2->vida = 0;
 
@@ -167,13 +222,14 @@ void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2)
 
 int main()
 {
-    
+    //Chamar essa função para os Pokemons serem adicionados no jogo em execução.
     colocarPokemons();
     
     struct Pokemon p1 = pokemons[0];
-    struct Pokemon p2 = pokemons[1];
-
-    calcularBatalha(&p1, &p2, 1, 1);
+    struct Pokemon p2 = pokemons[3];
+    
+    //Função que irá ser chamada após cada pokémon escolher seu ataque.
+    calcularBatalha(&p1, &p2, 3, 4);
 
     return 0;
 }
