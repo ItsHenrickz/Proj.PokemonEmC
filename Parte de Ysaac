@@ -1,0 +1,102 @@
+#include <stdio.h>
+
+// Estrutura compatível com a do Rick e Reinaldo
+struct Pokemon {
+    int indice;
+    char nome[50];
+    int vida;
+    int danobase;
+    void (*ataque1)(struct Pokemon*, struct Pokemon*);
+    void (*ataque2)(struct Pokemon*, struct Pokemon*);
+    void (*ataque3)(struct Pokemon*, struct Pokemon*);
+    void (*ataque4)(struct Pokemon*, struct Pokemon*);
+    int velocidade;
+};
+
+// Dependências externas
+extern struct Pokemon pokemons[];
+void colocarPokemons();
+void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2);
+
+// "Limpar" tela
+static void limparTela() {
+    for (int i = 0; i < 30; i++) putchar('\n');
+}
+
+// Mostrar status
+static void mostrarTela(struct Pokemon *p1, struct Pokemon *p2) {
+    printf("========================================\n");
+    printf("           STATUS ATUAL DA BATALHA      \n");
+    printf("========================================\n");
+    printf("%s - Vida: %d | Velocidade: %d\n", p1->nome, p1->vida, p1->velocidade);
+    printf("%s - Vida: %d | Velocidade: %d\n", p2->nome, p2->vida, p2->velocidade);
+    printf("========================================\n");
+}
+
+// Entrada segura
+static int lerInteiroSeguro(int min, int max, int defaultVal) {
+    int x;
+    if (scanf("%d", &x) != 1) {
+        while (getchar() != '\n');
+        return defaultVal;
+    }
+    if (x < min || x > max) return defaultVal;
+    return x;
+}
+
+int main() {
+    colocarPokemons();
+
+    printf("Escolha 2 pokémons para a batalha:\n");
+    for (int i = 0; i < 4; i++) {
+        printf("%d) %s\n", pokemons[i].indice, pokemons[i].nome);
+    }
+
+    printf("Jogador 1 -> índice: ");
+    int idx1 = lerInteiroSeguro(0, 3, 0);
+
+    printf("Jogador 2 -> índice: ");
+    int idx2 = lerInteiroSeguro(0, 3, 1);
+
+    struct Pokemon p1 = pokemons[idx1];
+    struct Pokemon p2 = pokemons[idx2];
+
+    limparTela();
+    printf("Pokémons escolhidos:\n");
+    printf("Jogador 1 -> %s\n", p1.nome);
+    printf("Jogador 2 -> %s\n", p2.nome);
+    mostrarTela(&p1, &p2);
+
+    int turno = 1;
+
+    while (p1.vida > 0 && p2.vida > 0) {
+        printf("\n========== TURNO %d ==========\n", turno);
+        mostrarTela(&p1, &p2);
+
+        printf("\nJogador 1 (%s) - ataque (1-4): ", p1.nome);
+        int atk1 = lerInteiroSeguro(1, 4, 1);
+
+        printf("Jogador 2 (%s) - ataque (1-4): ", p2.nome);
+        int atk2 = lerInteiroSeguro(1, 4, 1);
+
+        limparTela();
+        printf("=== ATAQUES ESCOLHIDOS ===\n");
+        printf("%s escolheu %d\n", p1.nome, atk1);
+        printf("%s escolheu %d\n", p2.nome, atk2);
+        printf("\nExecutando rodada...\n\n");
+
+        calcularBatalha(&p1, &p2, atk1, atk2);
+
+        printf("\n--- STATUS PÓS-RODADA ---\n");
+        mostrarTela(&p1, &p2);
+
+        turno++;
+    }
+
+    if (p1.vida <= 0)
+        printf("\n%s foi derrotado! %s venceu!\n", p1.nome, p2.nome);
+    else
+        printf("\n%s foi derrotado! %s venceu!\n", p2.nome, p1.nome);
+
+    return 0;
+}
