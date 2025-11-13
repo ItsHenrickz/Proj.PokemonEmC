@@ -247,7 +247,7 @@ int main()
             printf("\nCom a morte de %s, o jogador 2 acabou perdendo a partida, assim: === VENCE a partida o JOGADOR 1 (Utilizando %s) ===\n", p2.nome, p1.nome);
         }
         
-        printf("\nClique:\n1)Jogar novamente\n2)Finalizar o jogo\n");
+        printf("\nClique:\n1)Jogar novamente\nQualquer outra tecla)Finalizar o jogo\n");
         
         if (scanf("%d", &escolha) !=1) {
             escolha = 2;
