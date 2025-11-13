@@ -242,9 +242,9 @@ int main()
         calcularBatalha(&p1, &p2, 1, 1);
         
         if (p1.vida == 0) {
-            printf("\nCom a morte de %s, o jogador 1 acabou perdendo, assim: === VENCE a partida o JOGADOR 2 (Utilizando %s) ===\n", p1.nome, p2.nome);
+            printf("\nCom a morte de %s, o jogador 1 acabou perdendo, assim: \n=== VENCE a partida o JOGADOR 2 (Utilizando %s) ===\n", p1.nome, p2.nome);
         }else if (p2.vida == 0) {
-            printf("\nCom a morte de %s, o jogador 2 acabou perdendo a partida, assim: === VENCE a partida o JOGADOR 1 (Utilizando %s) ===\n", p2.nome, p1.nome);
+            printf("\nCom a morte de %s, o jogador 2 acabou perdendo a partida, assim: \n=== VENCE a partida o JOGADOR 1 (Utilizando %s) ===\n", p2.nome, p1.nome);
         }
         
         printf("\nClique:\n1)Jogar novamente\nQualquer outra tecla)Finalizar o jogo\n");
