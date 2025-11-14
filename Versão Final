@@ -1,0 +1,440 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+//Estrutura para definir as características do pokémon.
+struct Pokemon{
+    int indice;
+    char nome[50];
+    int vida;
+    int danobase;
+    void (*ataque1)(struct Pokemon*, struct Pokemon*);
+    void (*ataque2)(struct Pokemon*, struct Pokemon*);
+    void (*ataque3)(struct Pokemon*, struct Pokemon*);
+    void (*ataque4)(struct Pokemon*, struct Pokemon*);
+    int velocidade;
+    char nomeatk1[50];
+    char nomeatk2[50];
+    char nomeatk3[50];
+    char nomeatk4[50];
+};
+
+//Array para armazenar os pokémons já existentes.
+struct Pokemon pokemons[4];
+
+//Função para copiar a string do nome do pokemon para a variavel nome do tipo Pokemon.
+void copiaNome(char destinoNome[], const char origemNome[]){
+    int i = 0;
+    while (origemNome[i] != '\0'){
+        destinoNome[i] = origemNome[i];
+        i++;
+    }
+    destinoNome[i] = '\0';
+}
+
+//Fórmula para calcular o dano de um ataque.
+int formAtk(struct Pokemon *primeiro, int poderAtk){
+    return (primeiro->danobase * poderAtk)/50;
+}
+
+//Ataques: Cada ataque possui sua própria função.
+//Ataques do Gengar
+void ShadowBall(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 60); //Inimigo
+    printf("%s usou Shadow Ball! ", primeiro->nome);
+}
+void Confusion(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 30); //Inimigo
+    segundo->velocidade *= 0.8; //Inimigo
+    printf("%s usou Confusion! A velocidade do inimigo diminuiu! ", primeiro->nome);
+}
+void Growth(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.2; //Usuário
+    printf("%s usou Growth! O dano base do usuário aumentou!\n", primeiro->nome);
+}
+void NightShade(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 45); //Inimigo
+    printf("%s usou Night Shade! ", primeiro->nome);
+}
+
+//Ataques do Lucario
+void AuraSphere(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 80); //Inimigo
+    printf("%s usou Aura Sphere! ", primeiro->nome);
+}
+void BulkUp(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.2; //Usuário
+    printf("%s usou Bulk Up! O dano base do usuário aumentou!\n", primeiro->nome);
+}
+void CloseCombat (struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 100); //Inimigo
+    primeiro->vida -= 20; //Usuário
+    printf("%s usou Close Combat! %s perdeu um pouco de vida! ", primeiro->nome, primeiro->nome);
+}
+void HealPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->vida += 40; //Usuário
+    if (primeiro->vida > 220){
+        primeiro->vida = 220;
+    }
+    printf("%s usou Heal Pulse! %s recuperou um pouco de vida!\n", primeiro->nome, primeiro->nome);
+}
+
+//Ataques do Scizor
+void BulletPunch(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 50);
+    primeiro->velocidade *= 1.3;
+    printf("%s usou Bullet Punch! Sua velocidade aumentou! ", primeiro->nome);
+}
+
+void SwordsDance(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->danobase *= 1.5;
+    printf("%s usou Swords Dance! Seu poder de ataque aumentou consideravelmente!\n", primeiro->nome);
+}
+
+void IronHead(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 70);
+    printf("%s usou Iron Head! ", primeiro->nome);
+}
+
+void XScissor(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 65);
+    printf("%s usou X-Scissor! ", primeiro->nome);
+}
+
+//Ataques do Greninja
+void WaterShuriken(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 50);
+    printf("%s usou Water Shuriken! ", primeiro->nome);
+}
+
+void DarkPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 60);
+    printf("%s usou Dark Pulse! ", primeiro->nome);
+}
+
+void DoubleTeam(struct Pokemon *primeiro, struct Pokemon *segundo){
+    primeiro->velocidade *= 1.3;
+    printf("%s usou Double Team! Sua velocidade aumentou!\n", primeiro->nome);
+}
+
+void HydroPump(struct Pokemon *primeiro, struct Pokemon *segundo){
+    segundo->vida -= formAtk(primeiro, 90);
+    printf("%s usou Hydro Pump! ", primeiro->nome);
+}
+
+
+//Função que permite adicionar os pokemons e suas características no array "pokemons[]".
+void criarPokemon(
+    int indice,
+    const char *nome,
+    int vida,
+    int danobase,
+    int velocidade,
+    void (*ataq1)(struct Pokemon*, struct Pokemon*), const char *nome1,
+    void (*ataq2)(struct Pokemon*, struct Pokemon*), const char *nome2,
+    void (*ataq3)(struct Pokemon*, struct Pokemon*), const char *nome3,
+    void (*ataq4)(struct Pokemon*, struct Pokemon*), const char *nome4
+    ){
+        pokemons[indice].indice = indice;
+        copiaNome(pokemons[indice].nome, nome);
+        pokemons[indice].vida = vida;
+        pokemons[indice].danobase = danobase;
+        pokemons[indice].ataque1 = ataq1;
+        pokemons[indice].ataque2 = ataq2;
+        pokemons[indice].ataque3 = ataq3;
+        pokemons[indice].ataque4 = ataq4;
+        pokemons[indice].velocidade = velocidade;
+        copiaNome(pokemons[indice].nomeatk1, nome1);
+        copiaNome(pokemons[indice].nomeatk2, nome2);
+        copiaNome(pokemons[indice].nomeatk3, nome3);
+        copiaNome(pokemons[indice].nomeatk4, nome4);
+    }
+    
+//Função que adiciona cada pokemon no array.
+void colocarPokemons(){
+    
+    criarPokemon(
+        0, "Gengar", 200, 50, 100, ShadowBall, "Shadow Ball", Confusion, "Confusion", Growth, "Growth",
+        NightShade,"Night Shade"
+        );
+    
+    criarPokemon(
+        1, "Lucario", 220, 45, 90, AuraSphere, "Aura Sphere", BulkUp, "Bulk Up", CloseCombat, "Close Combat",
+        HealPulse, "Heal Pulse"
+        );
+    
+    criarPokemon(
+        2, "Scizor", 230, 45, 85, BulletPunch, "Bullet Punch", SwordsDance, "Swords Dance", IronHead, "Iron Head",
+        XScissor, "X Scissor"
+        );
+        
+    criarPokemon(
+        3, "Greninja", 185, 55, 120, WaterShuriken, "Water Shuriken", DarkPulse, "Dark Pulse", DoubleTeam, "Double Team",
+        HydroPump, "Hydro Pump"
+        );
+    
+}
+
+//Função para calcular a batalha, a ordem dos ataques e o resultado deles.
+void calcularBatalha(struct Pokemon *p1, struct Pokemon *p2, int atk1, int atk2) {
+    
+    // O loop continua enquanto ambos os Pokémons estiverem vivos
+    do {
+        
+        printf("\n================ NOVO TURNO ================\n");
+        
+        //Define o pokemon 1 e pokemon 2, e quem ataca primeiro e quem ataca por último.
+        struct Pokemon *primeiro, *segundo;
+        int atkPrimeiro, atkSegundo;
+        
+        // Determina quem ataca primeiro com base na velocidade
+        if (p1->velocidade >= p2->velocidade) {
+            primeiro = p1;
+            segundo = p2;
+            atkPrimeiro = atk1;
+            atkSegundo = atk2;
+        } else {
+            primeiro = p2;
+            segundo = p1;
+            atkPrimeiro = atk2;
+            atkSegundo = atk1;
+        }
+        
+        printf("\n%s é mais rápido e vai atacar primeiro!\n", primeiro->nome);
+        
+        // Ataque do Pokémon 1 (o mais rápido)
+        if (atkPrimeiro == 1) {
+            primeiro->ataque1(primeiro, segundo);
+        } else if (atkPrimeiro == 2) {
+            primeiro->ataque2(primeiro, segundo);
+        } else if (atkPrimeiro == 3) {
+            primeiro->ataque3(primeiro, segundo);
+        } else if (atkPrimeiro == 4) {
+            primeiro->ataque4(primeiro, segundo);
+        }
+        
+        // Verifica a morte após o primeiro ataque
+        if (segundo->vida <= 0) {
+            segundo->vida = 0; // Garante que a vida não seja negativa
+            printf("Vida atual do inimigo: %d\n", segundo->vida);
+            break; // Sai do loop, o Pokémon 1 venceu
+        }
+        
+        printf("Vida atual do inimigo: %d\n", segundo->vida);
+        
+        // Ataque do Pokémon 2 (se ainda estiver vivo)
+        printf("\n--- Contra-ataque ---\n");
+        if (atkSegundo == 1) {
+            segundo->ataque1(segundo, primeiro);
+        } else if (atkSegundo == 2) {
+            segundo->ataque2(segundo, primeiro);
+        } else if (atkSegundo == 3) {
+            segundo->ataque3(segundo, primeiro);
+        } else if (atkSegundo == 4) {
+            segundo->ataque4(segundo, primeiro);
+        }
+        
+        // Verifica a morte após o segundo ataque
+        if (primeiro->vida <= 0) {
+            primeiro->vida = 0; // Garante que a vida não seja negativa
+            printf("Vida atual do inimigo: %d\n", primeiro->vida);
+            break; // Sai do loop, o Pokémon 2 venceu
+        }
+        
+        printf("Vida atual do inimigo: %d\n", primeiro->vida);
+        
+    } while (0 > 1);
+}
+
+// "Limpar" tela
+static void limparTela() {
+    for (int i = 0; i < 30; i++) putchar('\n');
+}
+
+// Mostrar status
+static void mostrarTela(struct Pokemon *p1, struct Pokemon *p2) {
+    printf("========================================\n");
+    printf("           STATUS ATUAL DA BATALHA      \n");
+    printf("========================================\n");
+    printf("%s - Vida: %d | Velocidade: %d\n", p1->nome, p1->vida, p1->velocidade);
+    printf("%s - Vida: %d | Velocidade: %d\n", p2->nome, p2->vida, p2->velocidade);
+    printf("========================================\n");
+}
+
+// Entrada segura, evitando erros do usuário que quebrariam o programa.
+static int lerInteiroSeguro(int min, int max, int defaultVal) {
+    int x;
+    if (scanf("%d", &x) != 1) {
+        while (getchar() != '\n');
+        printf("\nEntrada inválida. Usando valor padrão: %d\n", defaultVal);
+        return defaultVal;
+    }
+    if (x < min || x > max){
+        printf("\nEntrada inválida. Usando valor padrão: %d\n", defaultVal);
+        return defaultVal;
+    }    
+    return x;
+}
+
+//Função para cada jogador escolher seu pokemon.
+int escolherPokemon() {
+    for (int i = 0; i < 4; i++) {
+        printf("%d) %s (Vida: %d | Vel: %d)\n",
+               pokemons[i].indice,
+               pokemons[i].nome,
+               pokemons[i].vida,
+               pokemons[i].velocidade);
+    }
+
+    int escolha;
+    printf("Digite o índice: ");
+    if (scanf("%d", &escolha) != 1 || escolha < 0 || escolha > 3) {
+        while (getchar() != '\n');
+        printf("\nEntrada inválida, utilizando valor padrão: 0.\n");
+        escolha = 0; // valor padrão
+    }
+
+    return escolha;
+}
+
+//Função para escolher o modo de jogo, se será Player x Player ou Player x Computador.
+int escolherModo(struct Pokemon *p1, struct Pokemon *p2) {
+    int modo;
+
+    printf("\n====================================\n");
+    printf("          SELECIONE O MODO          \n");
+    printf("====================================\n");
+    printf("1) Player x Player\n");
+    printf("2) Player x Computador\n");
+    printf("Escolha: ");
+
+    if (scanf("%d", &modo) != 1 || (modo != 1 && modo != 2)) {
+        while (getchar() != '\n');
+        printf("\nEntrada inválida, utilizando valor padrão: 1.\n");
+        modo = 1;
+    }
+
+    if (modo == 1) {
+        printf("\n=== PLAYER X PLAYER ===\n");
+        printf("Jogador 1, escolha seu pokémon:\n");
+        int idx1 = escolherPokemon();
+
+        printf("\nJogador 2, escolha seu pokémon:\n");
+        int idx2 = escolherPokemon();
+
+        *p1 = pokemons[idx1];
+        *p2 = pokemons[idx2];
+    }
+
+    else if (modo == 2) {
+        printf("\n=== PLAYER X COMPUTADOR ===\n");
+
+        printf("Jogador, escolha seu pokémon:\n");
+        int idx1 = escolherPokemon();
+
+        srand(time(NULL));
+        int idx2 = rand() % 4;  
+
+        printf("\nO computador está escolhendo um pokémon...\n");
+        printf("Computador escolheu: %s!\n", pokemons[idx2].nome);
+
+        *p1 = pokemons[idx1];
+        *p2 = pokemons[idx2];
+    }
+    return modo;
+}
+
+//O jogo em si.
+int main()
+{
+    //Trás os pokémons para dentro da Main.
+    colocarPokemons();
+    
+    int escolha = 1;
+    
+    struct Pokemon p1, p2;
+    
+    //Rode o jogo uma vez, e caso o jogador queira jogar novamente, repita o bloco de código.
+    do {
+        int modoEscolhido = escolherModo(&p1, &p2);
+        
+        limparTela();
+        printf("Pokémons escolhidos:\n");
+        printf("Jogador 1 -> %s\n", p1.nome);
+        printf("Jogador 2 -> %s\n", p2.nome);
+        
+    
+        int turno = 1;
+    
+        //Enquanto os pokémons estiverem vivos, adicione novos rounds.
+        while (p1.vida > 0 && p2.vida > 0) {
+            
+            if (modoEscolhido == 1){ //Caso seja Player x Player, execute isso.
+                printf("\n========== TURNO %d ==========\n", turno);
+                mostrarTela(&p1, &p2);
+                
+                printf("\nJogador 1 (%s) - Ataques: 1 - %s   2 - %s   3 - %s   4 - %s", p1.nome, p1.nomeatk1, p1.nomeatk2, p1.nomeatk3, p1.nomeatk4);
+                printf("\nEscolha seu ataque (1-4): ", p1.nome);
+                int atk1 = lerInteiroSeguro(1, 4, 1);
+        
+                printf("\nJogador 2 (%s) - Ataques: 1 - %s   2 - %s   3 - %s   4 - %s", p2.nome, p2.nomeatk1, p2.nomeatk2, p2.nomeatk3, p2.nomeatk4);
+                printf("\nEscolha seu ataque (1-4): ", p2.nome);
+                int atk2 = lerInteiroSeguro(1, 4, 1);
+        
+                limparTela();
+                printf("=== ATAQUES ESCOLHIDOS ===\n");
+                printf("%s escolheu %d\n", p1.nome, atk1);
+                printf("%s escolheu %d\n", p2.nome, atk2);
+                printf("\nExecutando rodada...\n\n");
+        
+                calcularBatalha(&p1, &p2, atk1, atk2);
+        
+                turno++;
+            }
+            else{ //Caso seja Player x Computador, execute isso:
+                
+                printf("\n========== TURNO %d ==========\n", turno);
+                mostrarTela(&p1, &p2);
+                
+                printf("\nJogador 1 (%s) - Ataques: 1 - %s   2 - %s   3 - %s   4 - %s", p1.nome, p1.nomeatk1, p1.nomeatk2, p1.nomeatk3, p1.nomeatk4);
+                printf("\nEscolha seu ataque (1-4): ", p1.nome);
+                int atk1 = lerInteiroSeguro(1, 4, 1);
+        
+                
+                int atk2 = (rand() % 4) + 1;
+        
+                limparTela();
+                printf("=== ATAQUES ESCOLHIDOS ===\n");
+                printf("%s escolheu %d\n", p1.nome, atk1);
+                printf("%s escolheu %d\n", p2.nome, atk2);
+                printf("\nExecutando rodada...\n\n");
+        
+                calcularBatalha(&p1, &p2, atk1, atk2);
+        
+                turno++;
+            }
+        }
+        
+        //Checa qual pokémon ficou com 0 de vida, e printa a mensagem correta.
+        if (p1.vida == 0) {
+            printf("\nCom a morte de %s, o jogador 1 acabou perdendo, assim: \n=== VENCE a partida o JOGADOR 2 (Utilizando %s) ===\n", p1.nome, p2.nome);
+        }else if (p2.vida == 0) {
+            printf("\nCom a morte de %s, o jogador 2 acabou perdendo a partida, assim: \n=== VENCE a partida o JOGADOR 1 (Utilizando %s) ===\n", p2.nome, p1.nome);
+        }
+        
+        printf("\nClique:\n1)Jogar novamente\nQualquer outra tecla)Finalizar o jogo\n");
+        
+        //Dá a escolha ao jogador de começar novamente o jogo, ou encerrar.
+        if (scanf("%d", &escolha) !=1) {
+            escolha = 2;
+            while (getchar() != '\n');
+        }else{
+            limparTela();
+        }
+        
+    }while (escolha == 1);
+    
+    printf("\nPrograma encerrado.\n");
+    
+    return 0;
+}
