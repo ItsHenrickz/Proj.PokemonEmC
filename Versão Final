@@ -1,3 +1,27 @@
+/*Implementar um algoritmo de um jogo na linguagem C.
+
+FOCO: Entregar uma batalha pokémon entre Player vs Player, ou Player vs Computador.
+
+LÓGICA: Definir um tipo para o pokémon, criar os ataques em forma de função,
+criar uma função para decidir se vai ser 2 players ou player vs computador,
+criar uma função para calcular os efeitos dos ataques selecionados, e permitir que
+o jogador inicie um novo jogo quando o jogo atual acabar.
+
+ALGORITMO:
+Entrada: Pegar as seguintes informações do usuário: Qual modo de jogo será, quais pokémons serão utilizados,
+e quais ataques serão utilizados. No final do jogo, saber se ele irá querer ou não começar novamente o jogo.
+
+Processamento: Caso seja Player vs Computador, o computador será o oponente e escolherá aleatoriamente seu pokémon
+e ataques. Após cada pokémon ser selecionado, começar a partida e permitir que o jogador escolha os ataques. Após ataques
+serem selecionados, processar o que cada ataque irá causar em ambos os pokémons. Quando um dos pokémons chegar a 0 de hp,
+o oponente vence a partida.
+
+Saída: Mostrar a tela de escolha de modo, no começo do programa, em seguida a tela para escolher os pokémons, em seguida,
+a partida em si, para que o jogador escolha o ataque, e no fim, mostrar a tela de fim de jogo, dando a opção de terminar o
+programa ou reiniciar a partida.
+*/
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -73,74 +97,74 @@ void HealPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
 
 //Ataques do Scizor
 void BulletPunch(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 50);
-    primeiro->velocidade *= 1.3;
+    segundo->vida -= formAtk(primeiro, 50); //Inimigo
+    primeiro->velocidade *= 1.3; //Usuário
     printf("%s usou Bullet Punch! Sua velocidade aumentou! ", primeiro->nome);}
 
 void SwordsDance(struct Pokemon *primeiro, struct Pokemon *segundo){
-    primeiro->danobase *= 1.5;
+    primeiro->danobase *= 1.5; //Usuário
     printf("%s usou Swords Dance! Seu poder de ataque aumentou consideravelmente!\n", primeiro->nome);}
 
 void IronHead(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 70);
+    segundo->vida -= formAtk(primeiro, 70); //Inimigo
     printf("%s usou Iron Head! ", primeiro->nome);}
 
 void XScissor(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 65);
+    segundo->vida -= formAtk(primeiro, 65); //Inimigo
     printf("%s usou X-Scissor! ", primeiro->nome);}
 
 //Ataques do Greninja
 void WaterShuriken(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 50);
+    segundo->vida -= formAtk(primeiro, 50); //Inimigo
     printf("%s usou Water Shuriken! ", primeiro->nome);}
 
 void DarkPulse(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 60);
+    segundo->vida -= formAtk(primeiro, 60); //Inimigo
     printf("%s usou Dark Pulse! ", primeiro->nome);}
 
 void DoubleTeam(struct Pokemon *primeiro, struct Pokemon *segundo){ 
-    primeiro->velocidade *= 1.3;
+    primeiro->velocidade *= 1.3; //Usuário
     printf("%s usou Double Team! Sua velocidade aumentou!\n", primeiro->nome);}
 
 void HydroPump(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 90);
+    segundo->vida -= formAtk(primeiro, 90); //Inimigo
     printf("%s usou Hydro Pump! ", primeiro->nome);}
     
 //Ataques do Jolteon
 void Thunderbolt(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 80);
+    segundo->vida -= formAtk(primeiro, 80); //Inimigo
     printf("%s usou Thunderbolt! ", primeiro->nome);}
     
 void BabyDollEyes(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->danobase *= 0.75;
+    segundo->danobase *= 0.75; //Inimigo
     printf("%s usou Baby-Doll Eyes! O dano base do inimigo caiu! ", primeiro->nome);}
     
 void DoubleKick(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 65);
+    segundo->vida -= formAtk(primeiro, 65); //Inimigo
     printf("%s usou Double Kick! ", primeiro->nome);}
     
 void ThunderShock(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 40);
-    segundo->velocidade *= 0.7;
+    segundo->vida -= formAtk(primeiro, 40); //Inimigo
+    segundo->velocidade *= 0.7; //Inimigo
     printf("%s usou Thunder Shock! A velocidade do inimigo caiu muito! ", primeiro->nome);}
 
 //Ataques do Blaziken
 void BraveBird(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 90);
-    primeiro->vida -= 30;
+    segundo->vida -= formAtk(primeiro, 90); //Inimigo
+    primeiro->vida -= 30; //Usuário
     printf("%s usou Brave Bird! Ele perdeu um pouco de vida! ", primeiro->nome);}
     
 void BlazeKick(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 80);
+    segundo->vida -= formAtk(primeiro, 80); //Inimigo
     printf("%s usou Blaze Kick! ", primeiro->nome);}
 
 void WillOWisp(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->danobase *= 0.78;
+    segundo->danobase *= 0.78; //Inimigo
     printf("%s usou Will-O-Wisp! O dano base do inimigo caiu! ", primeiro->nome);}
 
 void PowerUpPunch(struct Pokemon *primeiro, struct Pokemon *segundo){
-    segundo->vida -= formAtk(primeiro, 40);
-    primeiro->danobase *= 1.3;
+    segundo->vida -= formAtk(primeiro, 40); //Inimigo
+    primeiro->danobase *= 1.3; //Usuário
     printf("%s usou Power Up Punch! Seu dano base aumentou! ", primeiro->nome);}
 
 
@@ -171,7 +195,7 @@ void criarPokemon(
         copiaNome(pokemons[indice].nomeatk4, nome4);
     }
     
-//Função que adiciona cada pokemon no array.
+//Função que adiciona cada pokemon no array, bem como suas características.
 void colocarPokemons(){
     
     criarPokemon(
@@ -463,6 +487,7 @@ int main()
     }while (escolha == 1);
     
     printf("\nPrograma encerrado.\n");
+    //Fim do programa.
     
     return 0;
 }
